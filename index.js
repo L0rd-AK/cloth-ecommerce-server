@@ -6,7 +6,7 @@ const SSLCommerzPayment = require("sslcommerz-lts");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
-const port = process.env.PORT || 5001;
+const port = process.env.PORT || 5000;
 
 // ==========middleware===========
 app.use(
@@ -16,8 +16,8 @@ app.use(
   })
 );
 app.use(express.json());
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.yzoz4.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
-// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.rjhcvof.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.pijhe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+// const uri = `mongodb+srv://trb7620:rrZqrUF23Gu9IU7b@cluster0.pijhe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // ssl commerz cresentials
 const store_id = process.env.storeID;
@@ -35,15 +35,14 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const products = client.db("PawCare").collection("products");
-    const cart = client.db("PawCare").collection("cart");
-    const users = client.db("PawCare").collection("users");
-    const medicine = client.db("PawCare").collection("medicine");
-    const adopt = client.db("PawCare").collection("adopt");
-    const doctors = client.db("PawCare").collection("doctors");
-    const apointments = client.db("PawCare").collection("apointments");
-    const applications = client.db("PawCare").collection("applications");
-    const orders = client.db("PawCare").collection("orders");
+    const products = client.db("cloth-ecommerce").collection("products");
+    const cart = client.db("cloth-ecommerce").collection("cart");
+    const users = client.db("cloth-ecommerce").collection("users");
+    const orders = client.db("cloth-ecommerce").collection("orders");
+    const adopt = client.db("cloth-ecommerce").collection("adopt");
+    const doctors = client.db("cloth-ecommerce").collection("doctors");
+    const apointments = client.db("cloth-ecommerce").collection("apointments");
+    const applications = client.db("cloth-ecommerce").collection("applications");
     // =================== adopt crud operations ========================
 
     app.post("/adopt", async (req, res) => {
@@ -179,7 +178,7 @@ async function run() {
       const result = await products.insertOne(product);
       res.send(result);
     });
-    app.get("/products", async (req, res) => {
+    app.get("/admin/products", async (req, res) => {
 
       const result = await products.find().toArray();
       res.send(result);
@@ -203,7 +202,7 @@ async function run() {
       const result = await products.find(query).toArray();
       res.send(result);
     });
-    app.put("/products/:id", async (req, res) => {
+    app.put("/admin/products/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
       const query = { _id: new ObjectId(id) };
@@ -221,49 +220,49 @@ async function run() {
       const result = await products.updateOne(query, update, { upsert: true });
       res.send(result);
     })
-    app.delete("/products/:id", async (req, res) => {
+    app.delete("admin/products/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await products.deleteOne(query);
       res.send(result);
     })
-    // get all medicine added by individual user
-    app.get("/medicine/:email", async (req, res) => {
+    // get all orders added by individual user
+    app.get("/orders/:email", async (req, res) => {
       const email = req.params.email;
       const query = { "author.author_email": email };
-      const result = await medicine.find(query).toArray();
+      const result = await orders.find(query).toArray();
 
       res.send(result);
     });
     // post a data
-    app.post("/medicine", async (req, res) => {
-      const medicine = req.body;
-      const result = await medicine.insertOne(medicine);
+    app.post("/orders", async (req, res) => {
+      const orders = req.body;
+      const result = await orders.insertOne(orders);
       res.send(result);
     });
 
     // get a specific data=
-    app.get("/users/medicine/:id", async (req, res) => {
+    app.get("/users/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await medicine.findOne(query);
+      const result = await orders.findOne(query);
       res.send(result);
     });
 
-    // Get all medicine
-    app.get("/medicine", async (req, res) => {
-      const result = await medicine.find().toArray();
+    // Get all orders
+    app.get("/orders", async (req, res) => {
+      const result = await orders.find().toArray();
       res.send(result);
     });
-    // delete a medicine
-    app.delete("/medicine/:id", async (req, res) => {
+    // delete a orders
+    app.delete("/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await medicine.deleteOne(query);
+      const result = await orders.deleteOne(query);
       res.send(result);
     })
-    // update a medicine
-    app.put("/medicine/:id", async (req, res) => {
+    // update a orders
+    app.put("/orders/:id", async (req, res) => {
       const id = req.params.id;
       const data = req.body;
       const query = { _id: new ObjectId(id) };
@@ -272,7 +271,7 @@ async function run() {
           ...data
         }
       };
-      const result = await medicine.updateOne(query, update);
+      const result = await orders.updateOne(query, update);
       res.send(result);
     })
     // cart post operation
@@ -323,10 +322,10 @@ async function run() {
       res.send(result);
     })
     // delete a data
-    app.delete("/admin/medicine/:id", async (req, res) => {
+    app.delete("/admin/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
-      const result = await medicine.deleteOne(query);
+      const result = await orders.deleteOne(query);
       res.send(result);
     });
     // delete a products
@@ -338,6 +337,7 @@ async function run() {
     });
     // post user info
     app.post("/users", async (req, res) => {
+      console.log('hit')
       const email = req.body.email;
       const query = { email: email };
       const result = await users.findOne(query);
