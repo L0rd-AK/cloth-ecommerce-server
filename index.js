@@ -179,8 +179,8 @@ async function run() {
       res.send(result);
     });
     app.get("/admin/products", async (req, res) => {
-
-      const result = await products.find().toArray();
+      const query = req.query.category ? { category: req.query.category } : {};
+      const result = await products.find(query).toArray();
       res.send(result);
     });
     app.get("/products/:id", async (req, res) => {
@@ -216,7 +216,7 @@ async function run() {
           ...data
         }
       };
-   
+
       const result = await products.updateOne(query, update, { upsert: true });
       res.send(result);
     })
@@ -227,13 +227,14 @@ async function run() {
       res.send(result);
     })
     // get all orders added by individual user
-    app.get("/orders/:email", async (req, res) => {
-      const email = req.params.email;
-      const query = { "author.author_email": email };
+    app.get("/orders/:id", async (req, res) => {
+      console.log("hittt")
+      const id = req.params.id;
+      const query = { userEmail: id };
       const result = await orders.find(query).toArray();
 
       res.send(result);
-    });
+    })
     // post a data
     app.post("/orders", async (req, res) => {
       const orders = req.body;
@@ -389,6 +390,7 @@ async function run() {
     app.post("/payment", async (req, res) => {
       const tran_id = new ObjectId().toString();
       const id = new ObjectId().toString();
+
 
       const cartItem = req.body;
       const info = {
