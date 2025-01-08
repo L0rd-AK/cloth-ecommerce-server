@@ -39,10 +39,6 @@ async function run() {
     const cart = client.db("cloth-ecommerce").collection("cart");
     const users = client.db("cloth-ecommerce").collection("users");
     const orders = client.db("cloth-ecommerce").collection("orders");
-    const adopt = client.db("cloth-ecommerce").collection("adopt");
-    const doctors = client.db("cloth-ecommerce").collection("doctors");
-    const apointments = client.db("cloth-ecommerce").collection("apointments");
-    const applications = client.db("cloth-ecommerce").collection("applications");
     // =================== adopt crud operations ========================
 
     app.post("/adopt", async (req, res) => {
@@ -242,7 +238,7 @@ async function run() {
       res.send(result);
     });
 
-    // get a specific data=
+    // get a specific data==
     app.get("/users/orders/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
